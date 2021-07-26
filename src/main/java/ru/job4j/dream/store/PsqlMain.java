@@ -3,6 +3,8 @@ package ru.job4j.dream.store;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 
+import java.util.Optional;
+
 public class PsqlMain {
     public static void main(String[] args) {
         Store store = PsqlStore.instOf();
@@ -18,10 +20,16 @@ public class PsqlMain {
             System.out.println(candidate.getId() + " " + candidate.getName());
         }
         System.out.println("-----------------------------------------------");
-        Post post = store.findPostById(1);
-        System.out.println(post.getId() + " " + post.getName());
-        Candidate candidate = store.findCandidateById(1);
-        System.out.println(candidate.getId() + " " + candidate.getName());
+        Optional<Post> post = Optional.ofNullable(store.findPostById(1));
+        post.ifPresentOrElse(
+                val -> System.out.println(val.getId() + " " + val.getName()),
+                () -> System.out.println("Post not found")
+        );
+        Optional<Candidate> candidate = Optional.ofNullable(store.findCandidateById(1));
+        candidate.ifPresentOrElse(
+                val -> System.out.println(val.getId() + " " + val.getName()),
+                () -> System.out.println("Candidate not found")
+        );
         System.out.println("-----------------------------------------------");
     }
 }

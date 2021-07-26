@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class MemStore {
+public class MemStore implements Store {
     private static final MemStore INST = new MemStore();
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
@@ -58,6 +58,12 @@ public class MemStore {
         return candidates.get(id);
     }
 
+    @Override
+    public void removePost(int id) {
+        posts.remove(id);
+    }
+
+    @Override
     public void removeCandidate(int id) {
         candidates.remove(id);
     }

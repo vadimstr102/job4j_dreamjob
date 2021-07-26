@@ -17,4 +17,8 @@ public interface Store {
     Collection<Post> findAllPosts();
 
     Collection<Candidate> findAllCandidates();
+
+    void removePost(int id);
+
+    void removeCandidate(int id);
 }

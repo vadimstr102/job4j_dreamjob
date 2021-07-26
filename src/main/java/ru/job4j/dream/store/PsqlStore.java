@@ -1,6 +1,8 @@
 package ru.job4j.dream.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 
@@ -9,12 +11,10 @@ import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 public class PsqlStore implements Store {
+    private static final Logger LOG = LoggerFactory.getLogger(PsqlStore.class.getName());
     private final BasicDataSource pool = new BasicDataSource();
 
     private PsqlStore() {
@@ -68,7 +68,7 @@ public class PsqlStore implements Store {
 
     @Override
     public Post findPostById(int id) {
-        Post post = new Post(id, "");
+        Post post = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(
                      "SELECT name FROM posts WHERE id = ?"
@@ -77,18 +77,18 @@ public class PsqlStore implements Store {
             ps.setInt(1, id);
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    post.setName(it.getString("name"));
+                    post = new Post(id, it.getString("name"));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.findPostById()", e);
         }
         return post;
     }
 
     @Override
     public Candidate findCandidateById(int id) {
-        Candidate candidate = new Candidate(id, "");
+        Candidate candidate = null;
         try (Connection cn = pool.getConnection();
              PreparedStatement ps = cn.prepareStatement(
                      "SELECT name FROM candidates WHERE id = ?"
@@ -97,11 +97,11 @@ public class PsqlStore implements Store {
             ps.setInt(1, id);
             try (ResultSet it = ps.executeQuery()) {
                 if (it.next()) {
-                    candidate.setName(it.getString("name"));
+                    candidate = new Candidate(id, it.getString("name"));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.findCandidateById()", e);
         }
         return candidate;
     }
@@ -118,7 +118,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.findAllPosts()", e);
         }
         return posts;
     }
@@ -135,9 +135,37 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.findAllCandidates()", e);
         }
         return candidates;
+    }
+
+    @Override
+    public void removePost(int id) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "DELETE FROM posts WHERE id = ?"
+             )
+        ) {
+            ps.setInt(1, id);
+            ps.execute();
+        } catch (Exception e) {
+            LOG.error("Exception in PsqlStore.removePost()", e);
+        }
+    }
+
+    @Override
+    public void removeCandidate(int id) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "DELETE FROM candidates WHERE id = ?"
+             )
+        ) {
+            ps.setInt(1, id);
+            ps.execute();
+        } catch (Exception e) {
+            LOG.error("Exception in PsqlStore.removeCandidate()", e);
+        }
     }
 
     private void createPost(Post post) {
@@ -154,7 +182,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.createPost()", e);
         }
     }
 
@@ -168,7 +196,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, post.getId());
             ps.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.updatePost()", e);
         }
     }
 
@@ -186,7 +214,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.createCandidate()", e);
         }
     }
 
@@ -200,7 +228,7 @@ public class PsqlStore implements Store {
             ps.setInt(2, candidate.getId());
             ps.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Exception in PsqlStore.updateCandidate()", e);
         }
     }
 }
