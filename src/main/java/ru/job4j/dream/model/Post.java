@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Post {
     private int id;
-    private final String name;
+    private String name;
 
     public Post(int id, String name) {
         this.id = id;
@@ -21,6 +21,10 @@ public class Post {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
