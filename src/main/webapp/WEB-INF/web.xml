@@ -24,6 +24,10 @@
         <servlet-name>PhotoUploadServlet</servlet-name>
         <servlet-class>ru.job4j.dream.servlet.PhotoUploadServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AuthServlet</servlet-name>
+        <servlet-class>ru.job4j.dream.servlet.AuthServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>PostServlet</servlet-name>
@@ -44,5 +48,9 @@
     <servlet-mapping>
         <servlet-name>PhotoUploadServlet</servlet-name>
         <url-pattern>/photoUpload</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AuthServlet</servlet-name>
+        <url-pattern>/auth.do</url-pattern>
     </servlet-mapping>
 </web-app>
