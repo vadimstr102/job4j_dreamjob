@@ -39,6 +39,10 @@
         <servlet-name>AuthServlet</servlet-name>
         <servlet-class>ru.job4j.dream.servlet.AuthServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RegServlet</servlet-name>
+        <servlet-class>ru.job4j.dream.servlet.RegServlet</servlet-class>
+    </servlet>
 
     <servlet-mapping>
         <servlet-name>PostServlet</servlet-name>
@@ -63,5 +67,9 @@
     <servlet-mapping>
         <servlet-name>AuthServlet</servlet-name>
         <url-pattern>/auth.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegServlet</servlet-name>
+        <url-pattern>/reg.do</url-pattern>
     </servlet-mapping>
 </web-app>
