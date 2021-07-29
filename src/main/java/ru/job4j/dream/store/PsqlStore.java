@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -67,6 +68,15 @@ public class PsqlStore implements Store {
     }
 
     @Override
+    public void saveUser(User user) {
+        if (user.getId() == 0) {
+            createUser(user);
+        } else {
+            updateUser(user);
+        }
+    }
+
+    @Override
     public Post findPostById(int id) {
         Post post = null;
         try (Connection cn = pool.getConnection();
@@ -104,6 +114,30 @@ public class PsqlStore implements Store {
             LOG.error("Exception in PsqlStore.findCandidateById()", e);
         }
         return candidate;
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        User user = null;
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "SELECT * FROM users WHERE email = ?"
+             )
+        ) {
+            ps.setString(1, email);
+            try (ResultSet it = ps.executeQuery()) {
+                if (it.next()) {
+                    user = new User();
+                    user.setId(it.getInt("id"));
+                    user.setName(it.getString("name"));
+                    user.setEmail(email);
+                    user.setPassword(it.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Exception in PsqlStore.findUserByEmail()", e);
+        }
+        return user;
     }
 
     @Override
@@ -229,6 +263,43 @@ public class PsqlStore implements Store {
             ps.execute();
         } catch (Exception e) {
             LOG.error("Exception in PsqlStore.updateCandidate()", e);
+        }
+    }
+
+    private void createUser(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "INSERT INTO users(name, email, password) VALUES (?, ?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS
+             )
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    user.setId(id.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Exception in PsqlStore.createUser()", e);
+        }
+    }
+
+    private void updateUser(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement(
+                     "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?"
+             )
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.setInt(4, user.getId());
+            ps.execute();
+        } catch (Exception e) {
+            LOG.error("Exception in PsqlStore.updateUser()", e);
         }
     }
 }

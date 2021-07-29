@@ -2,6 +2,7 @@ package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 import java.util.Collection;
 import java.util.Map;
@@ -12,8 +13,10 @@ public class MemStore implements Store {
     private static final MemStore INST = new MemStore();
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
+    private final Map<Integer, User> users = new ConcurrentHashMap<>();
     private static final AtomicInteger POST_ID = new AtomicInteger(4);
     private static final AtomicInteger CANDIDATE_ID = new AtomicInteger(4);
+    private static final AtomicInteger USER_ID = new AtomicInteger(4);
 
     private MemStore() {
         posts.put(1, new Post(1, "Junior Java Job"));
@@ -28,14 +31,17 @@ public class MemStore implements Store {
         return INST;
     }
 
+    @Override
     public Collection<Post> findAllPosts() {
         return posts.values();
     }
 
+    @Override
     public Collection<Candidate> findAllCandidates() {
         return candidates.values();
     }
 
+    @Override
     public void savePost(Post post) {
         if (post.getId() == 0) {
             post.setId(POST_ID.incrementAndGet());
@@ -43,6 +49,7 @@ public class MemStore implements Store {
         posts.put(post.getId(), post);
     }
 
+    @Override
     public void saveCandidate(Candidate candidate) {
         if (candidate.getId() == 0) {
             candidate.setId(CANDIDATE_ID.incrementAndGet());
@@ -50,12 +57,33 @@ public class MemStore implements Store {
         candidates.put(candidate.getId(), candidate);
     }
 
+    @Override
+    public void saveUser(User user) {
+        if (user.getId() == 0) {
+            user.setId(POST_ID.incrementAndGet());
+        }
+        users.put(user.getId(), user);
+    }
+
+    @Override
     public Post findPostById(int id) {
         return posts.get(id);
     }
 
+    @Override
     public Candidate findCandidateById(int id) {
         return candidates.get(id);
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        User result = null;
+        for (User user : users.values()) {
+            if (email.equals(user.getEmail())) {
+                result = user;
+            }
+        }
+        return result;
     }
 
     @Override
