@@ -20,6 +20,24 @@
             }
             return false;
         }
+
+        function addRow() {
+            const number = Number($('#table th:last').text()) + 1;
+            const firstName = $('#firstname').val();
+            const lastName = $('#lastname').val();
+            const gender = $('#gender').val();
+            const description = $('#description').val();
+
+            $('#table tr:last').after(
+                '<tr>' +
+                '<th scope="row">' + number + '</th>' +
+                '<td>' + firstName + '</td>' +
+                '<td>' + lastName + '</td>' +
+                '<td>' + gender + '</td>' +
+                '<td>' + description + '</td>' +
+                '</tr>'
+            );
+        }
     </script>
 </head>
 <body>
@@ -47,8 +65,8 @@
                 <label for="gender">Пол</label>
                 <select class="form-control" id="gender" title="Выберите пол">
                     <option disabled>Выберите пол</option>
-                    <option value="male">Мужской</option>
-                    <option value="female">Женский</option>
+                    <option>Мужской</option>
+                    <option>Женский</option>
                 </select>
             </div>
         </div>
@@ -71,9 +89,10 @@
                 <thead>
                 <tr>
                     <th scope="col">№</th>
-                    <th scope="col">First</th>
-                    <th scope="col">Last</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Имя</th>
+                    <th scope="col">Фамилия</th>
+                    <th scope="col">Пол</th>
+                    <th scope="col">Описание</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -81,23 +100,30 @@
                     <th scope="row">1</th>
                     <td>Mark</td>
                     <td>Otto</td>
-                    <td>@mdo</td>
+                    <td>Мужской</td>
+                    <td>mark@mail.com</td>
                 </tr>
                 <tr>
                     <th scope="row">2</th>
                     <td>Jacob</td>
                     <td>Thornton</td>
-                    <td>@fat</td>
+                    <td>Мужской</td>
+                    <td>jacob@mail.com</td>
                 </tr>
                 <tr>
                     <th scope="row">3</th>
                     <td>Larry</td>
-                    <td>the Bird</td>
-                    <td>@twitter</td>
+                    <td>Bird</td>
+                    <td>Мужской</td>
+                    <td>larry@mail.com</td>
                 </tr>
                 </tbody>
             </table>
         </div>
+    </div>
+    <br>
+    <div class="form-group">
+        <button type="button" class="btn btn-success" onclick="addRow()">Добавить строку</button>
     </div>
 </div>
 </body>
