@@ -1,10 +1,12 @@
 <%@ page import="ru.job4j.dream.model.Candidate" %>
 <%@ page import="ru.job4j.dream.store.PsqlStore" %>
+<%@ page import="ru.job4j.dream.model.City" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <!doctype html>
 <html lang="en">
 <head>
+    <title>Работа мечты</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -21,20 +23,55 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-    <title>Работа мечты</title>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/dreamjob/city',
+                dataType: 'json'
+            }).done(function (data) {
+                for (var city of data) {
+                    $('#cities').append(`<option>${city.name}</option>`)
+                }
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
+    </script>
+
+    <script>
+        function validate() {
+            if ($('#inputName').val() === "") {
+                alert($('#inputName').attr('title'));
+                return false;
+            }
+            if ($('#inputCity').val() === "") {
+                alert($('#inputCity').attr('title'));
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
 <%
     String id = request.getParameter("id");
-    Candidate candidate = new Candidate(0, "");
+    Candidate candidate = new Candidate(0, "", 0);
+    City city = new City();
+    city.setName("");
     if (id != null) {
         candidate = PsqlStore.instOf().findCandidateById(Integer.parseInt(id));
+        city = PsqlStore.instOf().findCityById(candidate.getCityId());
     }
 %>
 <div class="container pt-3">
     <div class="row">
         <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Главная</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
             </li>
@@ -58,18 +95,26 @@
         <div class="card" style="width: 100%">
             <div class="card-header">
                 <% if (id == null) { %>
-                Новая вакансия.
+                Новый кандидат
                 <% } else { %>
-                Редактирование вакансии.
+                Редактирование кандидата
                 <% } %>
             </div>
             <div class="card-body">
                 <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candidate.getId()%>" method="post">
                     <div class="form-group">
-                        <label>Имя</label>
-                        <input type="text" class="form-control" name="name" value="<%=candidate.getName()%>">
+                        <label>Название кандидата</label>
+                        <input type="text" class="form-control" id="inputName" name="name"
+                               value="<%=candidate.getName()%>" title="Введите название кандидата">
                     </div>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <div class="form-group">
+                        <label>Город</label>
+                        <input type="text" class="form-control" id="inputCity" name="city" list="cities"
+                               autocomplete="off"
+                               value="<%=city.getName()%>" title="Введите город">
+                        <datalist id="cities"></datalist>
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="return validate()">Сохранить</button>
                 </form>
             </div>
         </div>

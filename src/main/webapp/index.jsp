@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -22,9 +23,12 @@
     <title>Работа мечты</title>
 </head>
 <body>
-<div class="container">
+<div class="container pt-3">
     <div class="row">
         <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Главная</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
             </li>
@@ -38,25 +42,41 @@
                 <a class="nav-link" href="<%=request.getContextPath()%>/candidate/edit.jsp">Добавить кандидата</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp">Войти</a>
+                <a class="nav-link" href="<%=request.getContextPath()%>/login.jsp">
+                    <c:out value="${user.name}"/> | Выйти
+                </a>
             </li>
         </ul>
     </div>
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Сегодняшние вакансии.
+                Сегодняшние вакансии
             </div>
             <div class="card-body">
+                <ul>
+                    <c:forEach items="${posts}" var="post">
+                        <li>
+                            <c:out value="${post.name}"/>
+                        </li>
+                    </c:forEach>
+                </ul>
             </div>
         </div>
     </div>
     <div class="row pt-3">
         <div class="card" style="width: 100%">
             <div class="card-header">
-                Сегодняшние кандидаты.
+                Сегодняшние кандидаты
             </div>
             <div class="card-body">
+                <ul>
+                    <c:forEach items="${candidates}" var="candidate">
+                        <li>
+                            <c:out value="${candidate.name}"/>
+                        </li>
+                    </c:forEach>
+                </ul>
             </div>
         </div>
     </div>

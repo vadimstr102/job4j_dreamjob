@@ -3,6 +3,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <title>Работа мечты</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,13 +21,36 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
-
-    <title>Работа мечты</title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8080/dreamjob/city',
+                dataType: 'json'
+            }).done(function (data) {
+                for (let city of data) {
+                    $('table tbody tr td:nth-child(2)').each(
+                        function () {
+                            if (city.id === Number($(this).text())) {
+                                $(this).text(city.name)
+                            }
+                        }
+                    )
+                }
+            }).fail(function (err) {
+                console.log(err);
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container pt-3">
     <div class="row">
         <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Главная</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
             </li>
@@ -55,7 +79,8 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">Названия</th>
+                        <th scope="col">Кандидат</th>
+                        <th scope="col">Город</th>
                         <th scope="col">Фото</th>
                         <th scope="col">Редактирование</th>
                     </tr>
@@ -70,18 +95,21 @@
                                 <c:out value="${candidate.name}"/>
                             </td>
                             <td>
+                                <c:out value="${candidate.cityId}"/>
+                            </td>
+                            <td>
                                 <img src="<c:url value='/download?name=${candidate.id}'/>" width="100px"
                                      height="100px" alt="Фото кандидата"/>
                             </td>
                             <td>
                                 <a href="<c:url value='/photo_upload.jsp?id=${candidate.id}'/>"
-                                   class="btn btn-primary btn-sm" role="button">
+                                   class="btn btn-outline-success" role="button">
                                     Добавить фото
                                 </a>
                                 <br><br>
                                 <form action="<c:url value='/candidates.do?id=${candidate.id}&method=delete'/>"
                                       method="post">
-                                    <button type="submit" class="btn btn-danger btn-sm">
+                                    <button type="submit" class="btn btn-outline-danger">
                                         Удалить кандидата
                                     </button>
                                 </form>

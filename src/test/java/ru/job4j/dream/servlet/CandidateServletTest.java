@@ -46,7 +46,7 @@ public class CandidateServletTest {
         String path = "candidates.jsp";
         String candidatesAttributeKey = "candidates";
         MemStore store = MemStore.instOf();
-        store.saveCandidate(new Candidate(0, "n"));
+        store.saveCandidate(new Candidate(0, "n", 0));
 
         PowerMockito.mockStatic(PsqlStore.class);
         PowerMockito.when(PsqlStore.instOf()).thenReturn(store);

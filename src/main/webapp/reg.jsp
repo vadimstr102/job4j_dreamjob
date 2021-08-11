@@ -3,6 +3,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <title>Работа мечты</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -20,11 +21,26 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 
-    <title>Работа мечты</title>
+    <script>
+        function validate() {
+            if ($('#inputName').val() === "") {
+                alert($('#inputName').attr('title'));
+                return false;
+            }
+            if ($('#inputEmail').val() === "") {
+                alert($('#inputEmail').attr('title'));
+                return false;
+            }
+            if ($('#inputPassword').val() === "") {
+                alert($('#inputPassword').attr('title'));
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
 <div class="container pt-3">
-
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
@@ -34,17 +50,20 @@
                 <form action="<%=request.getContextPath()%>/reg.do" method="post">
                     <div class="form-group">
                         <label>Имя</label>
-                        <input type="text" class="form-control" name="name">
+                        <input type="text" class="form-control" id="inputName" name="name" title="Введите имя">
                     </div>
                     <div class="form-group">
                         <label>Почта</label>
-                        <input type="text" class="form-control" name="email">
+                        <input type="text" class="form-control" id="inputEmail" name="email"
+                               title="Введите адрес почты">
                     </div>
                     <div class="form-group">
                         <label>Пароль</label>
-                        <input type="password" class="form-control" name="password">
+                        <input type="password" class="form-control" id="inputPassword" name="password"
+                               title="Введите пароль">
                     </div>
-                    <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                    <button type="submit" class="btn btn-primary" onclick="return validate()">Зарегистрироваться
+                    </button>
                     <c:if test="${requestScope.error != null}">
                         <div style="color:red; font-weight: bold; margin: 30px 0;">
                             <c:out value="${requestScope.error}"/>

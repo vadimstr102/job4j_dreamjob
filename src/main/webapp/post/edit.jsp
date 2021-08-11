@@ -5,6 +5,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+    <title>Работа мечты</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,7 +23,15 @@
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
 
-    <title>Работа мечты</title>
+    <script>
+        function validate() {
+            if ($('#inputName').val() === "") {
+                alert($('#inputName').attr('title'));
+                return false;
+            }
+            return true;
+        }
+    </script>
 </head>
 <body>
 <%
@@ -35,6 +44,9 @@
 <div class="container pt-3">
     <div class="row">
         <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="<%=request.getContextPath()%>/index.do">Главная</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="<%=request.getContextPath()%>/posts.do">Вакансии</a>
             </li>
@@ -58,18 +70,19 @@
         <div class="card" style="width: 100%">
             <div class="card-header">
                 <% if (id == null) { %>
-                Новая вакансия.
+                Новая вакансия
                 <% } else { %>
-                Редактирование вакансии.
+                Редактирование вакансии
                 <% } %>
             </div>
             <div class="card-body">
                 <form action="<%=request.getContextPath()%>/posts.do?id=<%=post.getId()%>" method="post">
                     <div class="form-group">
-                        <label>Имя</label>
-                        <input type="text" class="form-control" name="name" value="<%=post.getName()%>">
+                        <label>Название вакансии</label>
+                        <input type="text" class="form-control" id="inputName" name="name" value="<%=post.getName()%>"
+                               title="Введите название вакансии">
                     </div>
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                    <button type="submit" class="btn btn-primary" onclick="return validate()">Сохранить</button>
                 </form>
             </div>
         </div>

@@ -1,6 +1,7 @@
 package ru.job4j.dream.servlet;
 
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.model.City;
 import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.ServletException;
@@ -25,10 +26,15 @@ public class CandidateServlet extends HttpServlet {
             File file = new File("c:\\images\\" + req.getParameter("id"));
             file.delete();
         } else {
+            String cityName = req.getParameter("city");
+            City city = new City();
+            city.setName(cityName);
+            PsqlStore.instOf().saveCity(city);
             PsqlStore.instOf().saveCandidate(
                     new Candidate(
                             Integer.parseInt(req.getParameter("id")),
-                            req.getParameter("name")
+                            req.getParameter("name"),
+                            city.getId()
                     )
             );
         }
