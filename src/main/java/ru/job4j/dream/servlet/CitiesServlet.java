@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-public class CityServlet extends HttpServlet {
+public class CitiesServlet extends HttpServlet {
     private static final Gson GSON = new GsonBuilder().create();
 
     @Override

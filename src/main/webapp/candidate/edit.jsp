@@ -29,7 +29,7 @@
         $(document).ready(function () {
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8080/dreamjob/city',
+                url: 'http://localhost:8080/dreamjob/cities',
                 dataType: 'json'
             }).done(function (data) {
                 for (var city of data) {
